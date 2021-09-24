@@ -70,6 +70,13 @@ CaseManager#getCase
 Returns the case with the ID specified, if the case doesn't exist, then returns `false`
 ```js
 CaseManager.getCase(CaseID);
+/* Case Base Object
+{
+    notes: [Array] (An Array of notes),
+    data: [JSON Object] (Case Data),
+    isLocked: [True/False] (If the case is locked or not / The value of the property locked)
+}
+*/
 // Example 1:
  var CaseManager = require('./CaseManager.js');
  var guild = /* Guild Reference */;
@@ -127,3 +134,35 @@ noteAuthor: the user ID that adds the note
  var caseid = "51";
  var Manager = new CaseManager(guild.id);
  Manager.addCaseNote(caseid, note, user.id); // Returns true
+```
+------------------------------------------
+CaseManager#deleteCase
+
+Deletes a case
+```js
+CaseManager.deleteCase(id);
+// Example:
+ var CaseManager = require('./CaseManager.js');
+ var guild = /* Guild Reference */;
+ var caseid = "153";
+ var Manager = new CaseManager(guild.id);
+ Manager.deleteCase(caseid); // Returns true
+```
+------------------------------------------
+CaseManager#removeCaseNote
+
+Removes a note from the case
+```js
+CaseManager.removeCaseNote(noteid);
+/* @N The note ID must be global id, no the note id in the case */
+// Example:
+ var CaseManager = require('./CaseManager.js');
+ var guild = /* Guild Reference */;
+ var noteid = "6";
+ var Manager = new CaseManager(guild.id);
+ Manager.removeCaseNote(noteid); // Returns true
+```
+------------------------------------------
+CaseManager#lock
+
+Locks the case (Locking the case just changes the property)
