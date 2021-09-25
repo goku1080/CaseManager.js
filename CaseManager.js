@@ -16,7 +16,8 @@ class CaseManager {
                 if(filter.user){
                     var validTypes = ["WARN", "KICK", "BAN", "MUTE"];
                     if(!validTypes.includes(filter.type)) return false;
-                    var casesFiltered = cases.filter(c => c.punishmentType == filter.type && c.targetUser == filter.user || c.executorUser == filter.user);
+                    var casesFiltered = cases.filter(c => c.punishmentType == filter.type && (c.targetUser == filter.user || c.executorUser == filter.user));
+                    console.log(casesFiltered);
                     return casesFiltered;
                 } else {
                     var validTypes = ["WARN", "KICK", "BAN", "MUTE"];
@@ -45,21 +46,7 @@ class CaseManager {
             isLocked: caseG.locked
         };
     }
-    addCase(executorID, executorTag, targetID, targetTag, type, reason, pID = null){
-        /*
-        Case Base DB FRAME
-
-        {
-        id,
-        executorUser,
-        targetUser,
-        punishmentType,
-        punishmentID,
-        reason,
-        locked
-        }
-
-        */
+    addCase(executorID, executorTag, targetID, targetTag, type, reason){
         var db = this.db;
         var validTypes = ["WARN", "KICK", "BAN", "MUTE"];
         if(!validTypes.includes(type)) return false;
@@ -71,9 +58,9 @@ class CaseManager {
             targetUser: targetID,
             targetUserTag: targetTag,
             punishmentType: type,
-            punishmentID: pID,
             reason,
             locked: false,
+            resolved: type == "KICK" ? true : false,
             deleted: false
         });
        return true;
@@ -97,18 +84,24 @@ class CaseManager {
         });
         return true;
     }
-    async deleteCase(id){
+    async deleteCase(id, resolve){
         var db = this.db;
         var db2 = this.dbNotes;
         var caseG = await db.get(`${id}`);
         if(!caseG || caseG.deleted == true) return false;
         var notesCaseDB = await db2.values();
         var notesCase = notesCaseDB.filter(nc => nc.caseID == caseG.id);
-        for(var note of notesCase){
-            db2.set(`${note.id}.deleted`, true);
+        if(resolve){
+            db.set(`${caseG.id}.resolved`, true);
+            return true;
+        } else {
+            for(var note of notesCase){
+                db2.set(`${note.id}.deleted`, true);
+            }
+            db.set(`${caseG.id}.deleted`, true);
+            return true;
         }
-        db.set(`${caseG.id}.deleted`, true);
-        return true;
+
     }
     async removeCaseNote(id){
         var db = this.dbNotes;
