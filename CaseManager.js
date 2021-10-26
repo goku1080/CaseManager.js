@@ -26,6 +26,7 @@ class CaseManager {
                     return casesFiltered;
                 }
             } else if(filter.user){
+                console.log(filter.user);
                 var casesFiltered = cases.filter(c => c.targetUser == filter.user || c.executorUser == filter.user);
                 return casesFiltered;  
             } else {
