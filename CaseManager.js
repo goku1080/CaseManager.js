@@ -17,7 +17,6 @@ class CaseManager {
                     var validTypes = ["WARN", "KICK", "BAN", "MUTE"];
                     if(!validTypes.includes(filter.type)) return false;
                     var casesFiltered = cases.filter(c => c.punishmentType == filter.type && (c.targetUser == filter.user || c.executorUser == filter.user));
-                    console.log(casesFiltered);
                     return casesFiltered;
                 } else {
                     var validTypes = ["WARN", "KICK", "BAN", "MUTE"];
